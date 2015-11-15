@@ -6,9 +6,10 @@ from django.shortcuts import get_object_or_404
 from django.utils.feedgenerator import DefaultFeed
 from django.http import HttpResponse
 
-from cms.views import PageDetailMixin
-from cms.apps.news.models import Article, Category
+from cms.views import SearchMetaDetailMixin
 from cms.html import process as process_html
+
+from .models import Article, Category
 
 
 class ArticleListMixin(object):
@@ -97,7 +98,7 @@ class ArticleDayArchiveView(ArticleListMixin, generic.DayArchiveView):
     pass
 
 
-class ArticleDetailView(ArticleListMixin, PageDetailMixin, generic.DateDetailView):
+class ArticleDetailView(ArticleListMixin, SearchMetaDetailMixin, generic.DateDetailView):
 
     context_object_name = "article"
 
@@ -124,7 +125,7 @@ class ArticleDetailView(ArticleListMixin, PageDetailMixin, generic.DateDetailVie
         return context
 
 
-class ArticleCategoryArchiveView(PageDetailMixin, ArticleArchiveView):
+class ArticleCategoryArchiveView(SearchMetaDetailMixin, ArticleArchiveView):
 
     """An archive view for articles by category."""
 

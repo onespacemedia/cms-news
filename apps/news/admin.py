@@ -5,8 +5,8 @@ from django.contrib import admin
 
 from cms import externals
 from cms.admin import PageBaseAdmin
-from cms.apps.news.models import Category, Article, STATUS_CHOICES, \
-    get_default_news_feed
+
+from .models import Category, Article, STATUS_CHOICES, get_default_news_feed
 
 
 class CategoryAdmin(PageBaseAdmin):

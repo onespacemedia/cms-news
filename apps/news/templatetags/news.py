@@ -7,7 +7,8 @@ from django.utils.html import escape
 from django.contrib.contenttypes.models import ContentType
 
 from cms.apps.pages.models import Page
-from cms.apps.news.models import Article, NewsFeed, get_default_news_page
+
+from ..models import Article, NewsFeed, get_default_news_page
 
 
 register = template.Library()

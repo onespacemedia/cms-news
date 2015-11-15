@@ -21,7 +21,7 @@ class NewsFeed(ContentBase):
     classifier = "syndication"
 
     # The urlconf used to power this content's views.
-    urlconf = "cms.apps.news.urls"
+    urlconf = "{{cookiecutter.repo_name}}.apps.news.urls"
 
     content_primary = HtmlField(
         "primary content",
