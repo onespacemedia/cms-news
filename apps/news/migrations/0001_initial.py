@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
-import cms.apps.news.models
+import {{cookiecutter.package_name}}.apps.news.models
 import django.db.models.deletion
 import cms.apps.media.models
 from django.conf import settings
@@ -102,7 +102,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='article',
             name='news_feed',
-            field=models.ForeignKey(default=cms.apps.news.models.get_default_news_feed, to='news.NewsFeed'),
+            field=models.ForeignKey(default={{cookiecutter.package_name}}.apps.news.models.get_default_news_feed, to='news.NewsFeed'),
             preserve_default=True,
         ),
         migrations.AlterUniqueTogether(
