@@ -1,11 +1,12 @@
-{% extends "news/base.html" %}
+{% extends "news/article_list.html" %}
 {% load news html %}
 
 
-{% block content_primary %}
+{% block content_above %}
+  {{ category.content_primary|html }}
+{% endblock %}
 
-    {{ category.content_primary|html }}
 
-    {% article_list article_list %}
-
+{% block main %}
+  {{ block.super }}
 {% endblock %}

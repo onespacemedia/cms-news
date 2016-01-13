@@ -1,0 +1,41 @@
+{% extends "news/base.html" %}
+{% load html news pagination thumbnail %}
+
+{% block main %}
+  <ul>
+    {% for article in article_list %}
+      <li>
+        <article>
+          <a href="{% article_url article %}">
+            {% thumbnail item.image "x140" crop="center" as im %}
+              <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+            {% endthumbnail %}
+          </a>
+
+          <h3><a href="{% article_url article %}">{{ article }}</a></h3>
+          <p>
+            <a href="{% article_day_archive_url article.date %}">{{ article.date }}</a>
+
+            {% for category in article.categories.all %}
+              <a href="{% category_url category %}">
+                {{ category }}{% if not forloop.last %}, {% endif %}
+              </a>
+            {% endfor %}
+          </p>
+
+          {% if article.summary %}
+            {{ article.summary|html }}
+          {% else %}
+            <p>{{ article.content|truncate_paragraphs:1|striptags }}</p>
+          {% endif %}
+        </article>
+      </li>
+    {% empty %}
+      <li>There are no articles!</li>
+    {% endfor %}
+  </ul>
+
+  {% if page_obj %}
+    {% pagination page_obj %}
+  {% endif %}
+{% endblock %}

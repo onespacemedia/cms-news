@@ -1,16 +1,14 @@
 """Admin settings for the CMS news app."""
 
+from cms import externals
+from cms.admin import OnlineBaseAdmin, PageBaseAdmin
 from django.conf import settings
 from django.contrib import admin
 
-from cms import externals
-from cms.admin import PageBaseAdmin
-
-from .models import Category, Article, STATUS_CHOICES, get_default_news_feed
+from .models import STATUS_CHOICES, Article, Category, get_default_news_feed
 
 
 class CategoryAdmin(PageBaseAdmin):
-
     """Admin settings for the Category model."""
 
     fieldsets = (
@@ -28,7 +26,6 @@ admin.site.register(Category, CategoryAdmin)
 
 
 class ArticleAdminBase(PageBaseAdmin):
-
     """Admin settings for the Article model."""
 
     date_hierarchy = "date"
@@ -55,6 +52,7 @@ class ArticleAdminBase(PageBaseAdmin):
     fieldsets.extend(PageBaseAdmin.fieldsets)
 
     fieldsets.remove(PageBaseAdmin.TITLE_FIELDS)
+    fieldsets.remove(OnlineBaseAdmin.PUBLICATION_FIELDS)
 
     raw_id_fields = ("image",)
 
@@ -102,6 +100,5 @@ if externals.reversion:
 else:
     class ArticleAdmin(ArticleAdminBase):
         pass
-
 
 admin.site.register(Article, ArticleAdmin)
