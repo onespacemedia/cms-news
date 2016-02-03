@@ -9,6 +9,7 @@ from .models import STATUS_CHOICES, Article, Category, get_default_news_feed
 
 
 class CategoryAdmin(PageBaseAdmin):
+
     """Admin settings for the Category model."""
 
     fieldsets = (
@@ -26,6 +27,7 @@ admin.site.register(Category, CategoryAdmin)
 
 
 class ArticleAdminBase(PageBaseAdmin):
+
     """Admin settings for the Article model."""
 
     date_hierarchy = "date"

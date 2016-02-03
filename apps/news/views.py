@@ -14,6 +14,7 @@ from .models import Article, Category
 
 
 class ArticleListMixin(object):
+
     """Base class for every view that handles articles."""
 
     model = Article
@@ -59,6 +60,7 @@ class ArticleArchiveView(ArticleListMixin, ListView):
 
 
 class ArticleFeedView(ArticleListMixin, BaseListView):
+
     """Generates an RSS feed of articles."""
 
     def get(self, request):
@@ -134,6 +136,7 @@ class ArticleDetailView(ArticleListMixin, SearchMetaDetailMixin,
 
 
 class ArticleCategoryArchiveView(SearchMetaDetailMixin, ArticleArchiveView):
+
     """An archive view for articles by category."""
 
     template_name = "news/article_category_archive.html"

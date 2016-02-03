@@ -4,10 +4,10 @@ from django.forms.models import save_instance
 from django.test import TestCase, RequestFactory
 from django.utils.timezone import now
 
+from .... import externals
+from ...pages.models import Page
 from ..admin import ArticleAdminBase
 from ..models import Article, Category, NewsFeed, get_default_news_feed
-from ...pages.models import Page
-from .... import externals
 
 
 class MockSuperUser(object):
