@@ -1,20 +1,20 @@
 from django.contrib.contenttypes.models import ContentType
-from django.test import TestCase
 from django.template import VariableDoesNotExist
+from django.test import TestCase
 from django.utils.timezone import now
 
-from ..models import Article, Category, NewsFeed
-from ..templatetags.news import (page_context, get_page_from_context,
-                                 takes_current_page, takes_article_page,
-                                 article_list, article_url, article_list_item,
-                                 article_archive_url, category_url,
-                                 category_list, article_year_archive_url,
-                                 article_day_archive_url, article_date,
-                                 article_category_list, article_meta,
-                                 article_date_list, article_latest_list,
-                                 get_article_latest_list)
-from ...pages.models import ContentBase, Page
 from .... import externals
+from ...pages.models import ContentBase, Page
+from ..models import Article, Category, NewsFeed
+from ..templatetags.news import (article_archive_url, article_category_list,
+                                 article_date, article_date_list,
+                                 article_day_archive_url, article_latest_list,
+                                 article_list, article_list_item, article_meta,
+                                 article_url, article_year_archive_url,
+                                 category_list, category_url,
+                                 get_article_latest_list,
+                                 get_page_from_context, page_context,
+                                 takes_article_page, takes_current_page)
 
 
 class TestPageContent(ContentBase):

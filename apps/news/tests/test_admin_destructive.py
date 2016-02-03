@@ -1,10 +1,10 @@
+import sys
+
+import mock
 from django.contrib import admin
 from django.test import TestCase
 
 from ..models import Article, Category
-
-import sys
-import mock
 
 
 class TestArticleAdminBase(TestCase):

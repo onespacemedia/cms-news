@@ -1,7 +1,7 @@
 from django.contrib.admin.sites import AdminSite
 from django.contrib.contenttypes.models import ContentType
 from django.forms.models import save_instance
-from django.test import TestCase, RequestFactory
+from django.test import RequestFactory, TestCase
 from django.utils.timezone import now
 
 from .... import externals

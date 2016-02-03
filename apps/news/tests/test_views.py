@@ -1,13 +1,14 @@
 from django.contrib.contenttypes.models import ContentType
-from django.test import TestCase, RequestFactory
+from django.test import RequestFactory, TestCase
 from django.utils.timezone import now
 from django.views import generic
 
-from ..models import Article, Category, NewsFeed
-from ..views import ArticleListMixin, ArticleDetailView, ArticleFeedView, ArticleCategoryArchiveView
+from .... import externals
 from ...pages.middleware import RequestPageManager
 from ...pages.models import Page
-from .... import externals
+from ..models import Article, Category, NewsFeed
+from ..views import (ArticleCategoryArchiveView, ArticleDetailView,
+                     ArticleFeedView, ArticleListMixin)
 
 
 class TestView(ArticleListMixin, generic.YearArchiveView):
