@@ -35,7 +35,7 @@ class NewsFeed(ContentBase):
     )
 
     def __unicode__(self):
-        return self.__str__()
+        return self.page.title
 
 
 def get_default_news_page():
@@ -85,7 +85,7 @@ class Category(PageBase):
         )
 
     def __unicode__(self):
-        return self.__str__()
+        return self.short_title or self.title
 
     class Meta:
         verbose_name_plural = "categories"
@@ -187,7 +187,7 @@ class Article(PageBase):
         return self._get_permalink_for_page(self.news_feed.page)
 
     def __unicode__(self):
-        return self.__str__()
+        return self.short_title or self.title
 
     class Meta:
         unique_together = (("news_feed", "date", "slug",),)
