@@ -1,12 +1,12 @@
 from datetime import timedelta
 
+from cms import externals
+from cms.apps.pages.models import Page
+from cms.models import publication_manager
 from django.contrib.contenttypes.models import ContentType
 from django.test import TestCase
 from django.utils.timezone import now
 
-from .... import externals
-from ....models import publication_manager
-from ...pages.models import Page
 from ..models import (Article, Category, CategoryHistoryLinkAdapter, NewsFeed,
                       get_default_news_feed, get_default_news_page)
 
@@ -84,7 +84,7 @@ class TestNews(TestCase):
 
     def test_categoryhistorylinkadapter_get_permalinks(self):
         self._create_objects()
-        adapter = CategoryHistoryLinkAdapter(Category)
+        adapter = CategoryHistoryLinkAdapter()
         self.assertEqual(adapter.get_permalinks(self.category), {'page_' + str(self.page.pk): '/foo/'})
 
     def test_article_get_permalink_for_page(self):

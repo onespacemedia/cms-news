@@ -1,11 +1,11 @@
+from cms import externals
+from cms.apps.pages.middleware import RequestPageManager
+from cms.apps.pages.models import Page
 from django.contrib.contenttypes.models import ContentType
 from django.test import RequestFactory, TestCase
 from django.utils.timezone import now
 from django.views import generic
 
-from .... import externals
-from ...pages.middleware import RequestPageManager
-from ...pages.models import Page
 from ..models import Article, Category, NewsFeed
 from ..views import (ArticleCategoryArchiveView, ArticleDetailView,
                      ArticleFeedView, ArticleListMixin)
@@ -157,6 +157,6 @@ class TestViews(TestCase):
         dispatch = view.dispatch(view.request, slug='foo')
         self.assertListEqual(dispatch.template_name, [
             'news/article_category_archive.html',
-            'news/article_archive.html'
+            'news/article_list.html'
         ])
         self.assertEqual(dispatch.status_code, 200)
