@@ -34,6 +34,9 @@ class NewsFeed(ContentBase):
         null=True,
     )
 
+    def __unicode__(self):
+        return self.__str__()
+
 
 def get_default_news_page():
     """Returns the default news page."""
@@ -80,6 +83,9 @@ class Category(PageBase):
                 "page_{id}".format(id=page.id), self._get_permalink_for_page(page))
             for page in pages
         )
+
+    def __unicode__(self):
+        return self.__str__()
 
     class Meta:
         verbose_name_plural = "categories"
@@ -179,6 +185,9 @@ class Article(PageBase):
     def get_absolute_url(self):
         """Returns the URL of the article."""
         return self._get_permalink_for_page(self.news_feed.page)
+
+    def __unicode__(self):
+        return self.__str__()
 
     class Meta:
         unique_together = (("news_feed", "date", "slug",),)

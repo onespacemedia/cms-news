@@ -143,7 +143,7 @@ def article_date_list(context, page):
     if current_year is not None:
         try:
             current_year = int(current_year)
-        except:
+        except TypeError:
             current_year = int(current_year.year)
     else:
         current_month = context.get("month", None)

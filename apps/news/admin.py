@@ -88,7 +88,7 @@ class ArticleAdminBase(PageBaseAdmin):
         """
         choices_list = STATUS_CHOICES
         if getattr(settings, "NEWS_APPROVAL_SYSTEM", False) and not request.user.has_perm('news.can_approve_articles'):
-            choices_list = [x for x in STATUS_CHOICES if not x[0] == 'approved']
+            choices_list = [x for x in STATUS_CHOICES if x[0] != 'approved']
 
         if db_field.name == "status":
             kwargs['choices'] = choices_list
