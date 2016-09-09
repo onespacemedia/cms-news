@@ -1,15 +1,16 @@
 """Template tags used by the news module."""
 
+import jinja2
+
 from functools import wraps
 
 from cms.apps.pages.models import Page
 from django import template
 from django.contrib.contenttypes.models import ContentType
 from django.utils.html import escape
+from django_jinja import library
 
 from ..models import Article, NewsFeed, get_default_news_page
-
-register = template.Library()
 
 
 def page_context(func):
@@ -87,39 +88,44 @@ def takes_article_page(func):
     return do_takes_article_page
 
 
-@register.simple_tag(takes_context=True)
+@library.global_function
+@jinja2.contextfunction
 @takes_article_page
-def article_url(context, article, page):
+def get_article_url(context, article, page):
     """Renders the URL for an article."""
     return escape(article._get_permalink_for_page(page))
 
 
-@register.simple_tag(takes_context=True)
+@library.global_function
+@jinja2.contextfunction
 @takes_current_page
-def article_archive_url(context, page):
+def get_article_archive_url(context, page):
     """Renders the URL for the current article archive."""
     return escape(page.reverse("article_archive"))
 
 
-@register.simple_tag(takes_context=True)
+@library.global_function
+@jinja2.contextfunction
 @takes_current_page
-def category_url(context, category, page):
+def get_category_url(context, category, page):
     """Renders the URL for the given category."""
     return escape(category._get_permalink_for_page(page))
 
 
-@register.simple_tag(takes_context=True)
+@library.global_function
+@jinja2.contextfunction
 @takes_current_page
-def article_year_archive_url(context, year, page):
+def get_article_year_archive_url(context, year, page):
     """Renders the year archive URL for the given year."""
     return escape(page.reverse("article_year_archive", kwargs={
         "year": year,
     }))
 
 
-@register.simple_tag(takes_context=True)
+@library.global_function
+@jinja2.contextfunction
 @takes_current_page
-def article_day_archive_url(context, date, page):
+def get_article_day_archive_url(context, date, page):
     """Renders the month archive URL for the given date."""
     return escape(page.reverse("article_day_archive", kwargs={
         "year": date.year,
@@ -128,7 +134,9 @@ def article_day_archive_url(context, date, page):
     }))
 
 
-@register.inclusion_tag("news/includes/article_date_list.html", takes_context=True)
+@library.global_function
+@library.render_with("news/includes/article_date_list.html")
+@jinja2.contextfunction
 @page_context
 @takes_current_page
 def article_date_list(context, page):

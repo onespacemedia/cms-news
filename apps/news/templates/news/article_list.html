@@ -1,24 +1,24 @@
 {% extends "news/base.html" %}
-{% load html news pagination thumbnail %}
+{#{% load html news pagination thumbnail %}#}
 
 {% block main %}
   <ul>
     {% for article in article_list %}
       <li>
         <article>
-          <a href="{% article_url article %}">
-            {% thumbnail item.image "x140" crop="center" as im %}
-              <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
-            {% endthumbnail %}
+          <a href="{{ get_article_url(article) }}">
+            {% with image = thumbnail(article.image.file, 'x140', crop='center') %}
+              <img src="{{ image.url }}" width="{{ image.width }}" height="{{ image.height }}">
+            {% endwith %}
           </a>
 
-          <h3><a href="{% article_url article %}">{{ article }}</a></h3>
+          <h3><a href="{{ get_article_url(article) }}">{{ article }}</a></h3>
           <p>
-            <a href="{% article_day_archive_url article.date %}">{{ article.date }}</a>
+            <a href="{{ get_article_day_archive_url(article.date) }}">{{ article.date }}</a>
 
-            {% for category in article.categories.all %}
-              <a href="{% category_url category %}">
-                {{ category }}{% if not forloop.last %}, {% endif %}
+            {% for category in article.categories.all() %}
+              <a href="{{ get_category_url(category) }}">
+                {{ category }}{% if not loop.last %}, {% endif %}
               </a>
             {% endfor %}
           </p>
@@ -26,16 +26,16 @@
           {% if article.summary %}
             {{ article.summary|html }}
           {% else %}
-            <p>{{ article.content|truncate_paragraphs:1|striptags }}</p>
+            <p>{{ article.content|truncate_paragraphs(1)|striptags }}</p>
           {% endif %}
         </article>
       </li>
-    {% empty %}
+    {% else %}
       <li>There are no articles!</li>
     {% endfor %}
   </ul>
 
-  {% if page_obj %}
-    {% pagination page_obj %}
-  {% endif %}
+    {% if page_obj %}
+      {{ pagination(page_obj) }}
+    {% endif %}
 {% endblock %}
