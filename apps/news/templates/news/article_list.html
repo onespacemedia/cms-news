@@ -35,7 +35,7 @@
     {% endfor %}
   </ul>
 
-    {% if page_obj %}
-      {{ pagination(page_obj) }}
-    {% endif %}
+  {% if page_obj %}
+    {{ pagination(page_obj) }}
+  {% endif %}
 {% endblock %}

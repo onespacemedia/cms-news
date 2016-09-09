@@ -14,7 +14,7 @@ from ..models import (Article, Category, CategoryHistoryLinkAdapter, NewsFeed,
 class TestNews(TestCase):
 
     def _create_objects(self):
-        with externals.watson.context_manager("update_index")():
+        with externals.watson.context_manager('update_index')():
             self.date = now()
             self.date_str = '/{}/{}/{}'.format(
                 self.date.strftime('%Y'),
@@ -25,7 +25,7 @@ class TestNews(TestCase):
             content_type = ContentType.objects.get_for_model(NewsFeed)
 
             self.page = Page.objects.create(
-                title="News Feed",
+                title='News Feed',
                 content_type=content_type,
             )
 

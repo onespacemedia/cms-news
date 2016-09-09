@@ -24,11 +24,11 @@ class Object(object):
 class NewsTest(TestCase):
 
     def setUp(self):
-        with externals.watson.context_manager("update_index")():
+        with externals.watson.context_manager('update_index')():
             content_type = ContentType.objects.get_for_model(TestPageContent)
 
             self.homepage = Page.objects.create(
-                title="Homepage",
+                title='Homepage',
                 slug='homepage',
                 content_type=content_type,
             )
@@ -46,11 +46,11 @@ class NewsTest(TestCase):
         )
 
         # Create a NewsFeed page.
-        with externals.watson.context_manager("update_index")():
+        with externals.watson.context_manager('update_index')():
             content_type = ContentType.objects.get_for_model(NewsFeed)
 
             self.page = Page.objects.create(
-                title="News Feed",
+                title='News Feed',
                 slug='news',
                 parent=self.homepage,
                 content_type=content_type,
@@ -116,11 +116,11 @@ class NewsTest(TestCase):
             takes_current_page(inner_function)({})
 
         # Create a NewsFeed page.
-        with externals.watson.context_manager("update_index")():
+        with externals.watson.context_manager('update_index')():
             content_type = ContentType.objects.get_for_model(NewsFeed)
 
             self.page = Page.objects.create(
-                title="News Feed",
+                title='News Feed',
                 parent=self.homepage,
                 content_type=content_type,
             )

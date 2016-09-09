@@ -26,7 +26,7 @@ class TestArticleAdminBase(TestCase):
         self.factory = RequestFactory()
         self.request = self.factory.get('/')
 
-        with externals.watson.context_manager("update_index")():
+        with externals.watson.context_manager('update_index')():
             self.date = now()
             self.date_str = '/{}/{}/{}'.format(
                 self.date.strftime('%Y'),
@@ -37,7 +37,7 @@ class TestArticleAdminBase(TestCase):
             content_type = ContentType.objects.get_for_model(NewsFeed)
 
             self.page = Page.objects.create(
-                title="News Feed",
+                title='News Feed',
                 slug='news',
                 content_type=content_type,
             )
@@ -105,5 +105,5 @@ class TestArticleAdminBase(TestCase):
     def test_articleadminbase_get_form(self):
         form = self.article_admin.get_form(self.request, obj=None)
         default_feed = get_default_news_feed()
-        self.assertTrue("news_feed" in form.base_fields)
-        self.assertEqual(default_feed, form.base_fields["news_feed"].initial)
+        self.assertTrue('news_feed' in form.base_fields)
+        self.assertEqual(default_feed, form.base_fields['news_feed'].initial)

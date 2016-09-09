@@ -8,14 +8,12 @@ from django.contrib import admin
 from .models import STATUS_CHOICES, Article, Category, get_default_news_feed
 
 
+@admin.register(Category)
 class CategoryAdmin(PageBaseAdmin):
-
-    """Admin settings for the Category model."""
-
     fieldsets = (
         PageBaseAdmin.TITLE_FIELDS,
-        ("Content", {
-            "fields": ("content_primary",),
+        ('Content', {
+            'fields': ['content_primary']
         }),
         PageBaseAdmin.PUBLICATION_FIELDS,
         PageBaseAdmin.NAVIGATION_FIELDS,
@@ -23,31 +21,25 @@ class CategoryAdmin(PageBaseAdmin):
     )
 
 
-admin.site.register(Category, CategoryAdmin)
-
-
 class ArticleAdminBase(PageBaseAdmin):
+    date_hierarchy = 'date'
 
-    """Admin settings for the Article model."""
+    search_fields = PageBaseAdmin.search_fields + ('content', 'summary',)
 
-    date_hierarchy = "date"
+    list_display = ['title', 'date', 'is_online']
 
-    search_fields = PageBaseAdmin.search_fields + ("content", "summary",)
-
-    list_display = ("title", "date", "is_online",)
-
-    list_filter = ("is_online", "categories", "status",)
+    list_filter = ['is_online', 'categories', 'status']
 
     fieldsets = [
         (None, {
-            "fields": ("title", "slug", "news_feed", "date", "status",),
+            'fields': ['title', 'slug', 'news_feed', 'date', 'status']
         }),
-        ("Content", {
-            "fields": ("image", "content", "summary",),
+        ('Content', {
+            'fields': ['image', 'content', 'summary']
         }),
-        ("Publication", {
-            "fields": ("categories", "authors", "is_online",),
-            "classes": ("collapse",),
+        ('Publication', {
+            'fields': ['categories', 'authors', 'is_online'],
+            'classes': ['collapse']
         }),
     ]
 
@@ -56,21 +48,20 @@ class ArticleAdminBase(PageBaseAdmin):
     fieldsets.remove(PageBaseAdmin.TITLE_FIELDS)
     fieldsets.remove(OnlineBaseAdmin.PUBLICATION_FIELDS)
 
-    raw_id_fields = ("image",)
+    raw_id_fields = ['image']
 
-    filter_horizontal = ("categories", "authors",)
+    filter_horizontal = ['categories', 'authors']
 
     def save_related(self, request, form, formsets, change):
-        """Saves the author of the article."""
         super(ArticleAdminBase, self).save_related(request, form, formsets, change)
         # For new articles, add in the current author.
-        if not change and not form.cleaned_data["authors"]:
+        if not change and not form.cleaned_data['authors']:
             form.instance.authors.add(request.user)
 
     def get_fieldsets(self, request, obj=None):
         fieldsets = super(ArticleAdminBase, self).get_fieldsets(request, obj)
 
-        if not getattr(settings, "NEWS_APPROVAL_SYSTEM", False):
+        if not getattr(settings, 'NEWS_APPROVAL_SYSTEM', False):
             for fieldset in fieldsets:
                 fieldset[1]['fields'] = tuple(x for x in fieldset[1]['fields'] if x != 'status')
 
@@ -87,18 +78,18 @@ class ArticleAdminBase(PageBaseAdmin):
         option to change the status of an Article to approved
         """
         choices_list = STATUS_CHOICES
-        if getattr(settings, "NEWS_APPROVAL_SYSTEM", False) and not request.user.has_perm('news.can_approve_articles'):
+        if getattr(settings, 'NEWS_APPROVAL_SYSTEM', False) and not request.user.has_perm('news.can_approve_articles'):
             choices_list = [x for x in STATUS_CHOICES if x[0] != 'approved']
 
-        if db_field.name == "status":
+        if db_field.name == 'status':
             kwargs['choices'] = choices_list
 
         return super(ArticleAdminBase, self).formfield_for_choice_field(db_field, request, **kwargs)
 
 
 if externals.reversion:
-    class ArticleAdmin(ArticleAdminBase, externals.reversion["admin.VersionMetaAdmin"]):
-        list_display = ArticleAdminBase.list_display + ("get_date_modified",)
+    class ArticleAdmin(ArticleAdminBase, externals.reversion['admin.VersionMetaAdmin']):
+        list_display = ArticleAdminBase.list_display + ('get_date_modified',)
 else:
     class ArticleAdmin(ArticleAdminBase):
         pass

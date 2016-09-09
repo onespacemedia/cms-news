@@ -14,44 +14,38 @@ from .models import Article, Category
 
 
 class ArticleListMixin(object):
-
-    """Base class for every view that handles articles."""
-
     model = Article
 
     make_object_list = True
 
-    date_field = "date"
+    date_field = 'date'
 
     allow_future = True  # The publication manager will take care of this.
 
-    context_object_name = "article_list"
+    context_object_name = 'article_list'
 
     def get_paginate_by(self, queryset):
-        """Returns the number of articles to show per page."""
         return self.request.pages.current.content.per_page
 
     def get_context_data(self, **kwargs):
-        """Returns the context data for the view."""
         context = super(ArticleListMixin, self).get_context_data(**kwargs)
         category_list = Category.objects.filter(
             article__news_feed__page=self.request.pages.current
         ).distinct()
-        context["category_list"] = category_list
+        context['category_list'] = category_list
 
         return context
 
     def get_queryset(self):
-        """Returns the article queryset."""
         return super(ArticleListMixin, self).get_queryset().prefetch_related(
-            "categories",
-            "authors",
+            'categories',
+            'authors',
         ).select_related(
-            "image"
+            'image'
         ).filter(
             news_feed__page=self.request.pages.current,
         ).order_by(
-            "-date"
+            '-date'
         )
 
 
@@ -60,9 +54,6 @@ class ArticleArchiveView(ArticleListMixin, ListView):
 
 
 class ArticleFeedView(ArticleListMixin, BaseListView):
-
-    """Generates an RSS feed of articles."""
-
     def get(self, request):
         """Generates the RSS feed."""
         page = request.pages.current
@@ -85,10 +76,10 @@ class ArticleFeedView(ArticleListMixin, BaseListView):
             )
 
         # Write the response.
-        content = feed.writeString("utf-8")
+        content = feed.writeString('utf-8')
         response = HttpResponse(content)
-        response["Content-Type"] = feed.mime_type
-        response["Content-Length"] = len(content)
+        response['Content-Type'] = feed.mime_type
+        response['Content-Length'] = len(content)
 
         return response
 
@@ -107,10 +98,9 @@ class ArticleDayArchiveView(ArticleListMixin, DayArchiveView):
 
 class ArticleDetailView(ArticleListMixin, SearchMetaDetailMixin,
                         generic.DateDetailView):
-    context_object_name = "article"
+    context_object_name = 'article'
 
     def get_context_data(self, **kwargs):
-        """Adds the next and previous articles to the context."""
         context = super(ArticleDetailView, self).get_context_data(**kwargs)
 
         # Get the next article.
@@ -129,17 +119,14 @@ class ArticleDetailView(ArticleListMixin, SearchMetaDetailMixin,
         except IndexError:
             prev_article = None
 
-        context["next_article"] = next_article
-        context["prev_article"] = prev_article
+        context['next_article'] = next_article
+        context['prev_article'] = prev_article
 
         return context
 
 
 class ArticleCategoryArchiveView(SearchMetaDetailMixin, ArticleArchiveView):
-
-    """An archive view for articles by category."""
-
-    template_name = "news/article_category_archive.html"
+    template_name = 'news/article_category_archive.html'
 
     def get_queryset(self):
         """Returns the queryset filtered by category."""
@@ -150,7 +137,7 @@ class ArticleCategoryArchiveView(SearchMetaDetailMixin, ArticleArchiveView):
     def get_context_data(self, **kwargs):
         """Adds the category to the context."""
         context = super(ArticleCategoryArchiveView, self).get_context_data(**kwargs)
-        context["category"] = self.object
+        context['category'] = self.object
 
         return context
 
@@ -158,7 +145,7 @@ class ArticleCategoryArchiveView(SearchMetaDetailMixin, ArticleArchiveView):
         """Parses the category from the request."""
         self.object = get_object_or_404(
             Category,
-            slug=kwargs["slug"],
+            slug=kwargs['slug'],
         )
 
         return super(ArticleCategoryArchiveView, self).dispatch(request, *args, **kwargs)
