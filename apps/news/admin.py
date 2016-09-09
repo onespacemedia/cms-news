@@ -89,7 +89,7 @@ class ArticleAdminBase(PageBaseAdmin):
 
 if externals.reversion:
     class ArticleAdmin(ArticleAdminBase, externals.reversion['admin.VersionMetaAdmin']):
-        list_display = ArticleAdminBase.list_display + ('get_date_modified',)
+        list_display = ArticleAdminBase.list_display + ['get_date_modified']
 else:
     class ArticleAdmin(ArticleAdminBase):
         pass
