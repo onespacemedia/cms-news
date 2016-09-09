@@ -139,7 +139,7 @@ def get_article_day_archive_url(context, date, page):
 @jinja2.contextfunction
 @page_context
 @takes_current_page
-def article_date_list(context, page):
+def render_article_date_list(context, page):
     """Renders a list of dates."""
     date_list = Article.objects.filter(
         news_feed_id=page.id,
