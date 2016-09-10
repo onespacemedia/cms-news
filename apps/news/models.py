@@ -112,7 +112,7 @@ class ArticleManager(OnlineBaseManager):
     def select_published(self, queryset):
         queryset = super(ArticleManager, self).select_published(queryset)
         queryset = queryset.filter(
-            date__lte=timezone.now(),
+            date__lte=timezone.now().replace(second=0, microsecond=0),
         )
         if getattr(settings, 'NEWS_APPROVAL_SYSTEM', False):
             queryset = queryset.filter(
