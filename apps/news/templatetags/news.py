@@ -1,9 +1,8 @@
 """Template tags used by the news module."""
 
-import jinja2
-
 from functools import wraps
 
+import jinja2
 from cms.apps.pages.models import Page
 from django import template
 from django.contrib.contenttypes.models import ContentType
