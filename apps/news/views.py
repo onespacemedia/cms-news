@@ -105,22 +105,15 @@ class ArticleDetailView(ArticleListMixin, SearchMetaDetailMixin,
 
         # Get the next article.
         try:
-            next_article = self.get_queryset().filter(
-                date__lt=self.object.date,
-            )[0]
-        except IndexError:
-            next_article = None
-
+            context['next_article'] = self.object.get_next_by_date()
+        except Article.DoesNotExist:
+            context['next_article'] = None
+          
         # Get the previous article.
         try:
-            prev_article = self.get_queryset().reverse().filter(
-                date__gt=self.object.date,
-            )[0]
-        except IndexError:
-            prev_article = None
-
-        context['next_article'] = next_article
-        context['prev_article'] = prev_article
+            context['prev_article'] = self.object.get_previous_by_date()
+        except Article.DoesNotExist:
+            context['prev_article'] = None
 
         return context
 
