@@ -2,12 +2,7 @@
 
 {% block main %}
   <article>
-    {% if article.content %}
-      {{ article.content|html }}
-    {% else %}
-      {{ article.summary|html }}
-    {% endif %}
-
+    {{ article.content|html }}
     {% if next_article or prev_article %}
       <nav class="news-article-detail-navigation">
         {% if prev_article %}

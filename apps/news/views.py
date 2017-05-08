@@ -5,30 +5,18 @@ from cms.views import SearchMetaDetailMixin
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.utils.feedgenerator import DefaultFeed
-from django.views import generic
-from django.views.generic import (DayArchiveView, ListView, MonthArchiveView,
-                                  YearArchiveView)
+from django.views.generic import DetailView, ListView
 from django.views.generic.list import BaseListView
 
 from .models import Article, Category
 
-
-class ArticleListMixin(object):
+class ArticleMixin(object):
     model = Article
 
-    make_object_list = True
-
-    date_field = 'date'
-
-    allow_future = True  # The publication manager will take care of this.
-
-    context_object_name = 'article_list'
-
-    def get_paginate_by(self, queryset):
-        return self.request.pages.current.content.per_page
+    context_object_name = 'article'
 
     def get_context_data(self, **kwargs):
-        context = super(ArticleListMixin, self).get_context_data(**kwargs)
+        context = super(ArticleMixin, self).get_context_data(**kwargs)
         category_list = Category.objects.filter(
             article__news_feed__page=self.request.pages.current
         ).distinct()
@@ -36,10 +24,20 @@ class ArticleListMixin(object):
 
         return context
 
+
+class ArticleListMixin(ArticleMixin):
+    make_object_list = True
+
+    allow_empty = True
+
+    context_object_name = 'article_list'
+
+    def get_paginate_by(self, queryset):
+        return self.request.pages.current.content.per_page
+
     def get_queryset(self):
         return super(ArticleListMixin, self).get_queryset().prefetch_related(
             'categories',
-            'authors',
         ).select_related(
             'image'
         ).filter(
@@ -50,11 +48,11 @@ class ArticleListMixin(object):
 
 
 class ArticleArchiveView(ArticleListMixin, ListView):
-    allow_empty = True
+    pass
 
 
 class ArticleFeedView(ArticleListMixin, BaseListView):
-    def get(self, request):
+    def get(self, request, *args, **kwargs):
         """Generates the RSS feed."""
         page = request.pages.current
 
@@ -84,21 +82,7 @@ class ArticleFeedView(ArticleListMixin, BaseListView):
         return response
 
 
-class ArticleYearArchiveView(ArticleListMixin, YearArchiveView):
-    allow_empty = True
-
-
-class ArticleMonthArchiveView(ArticleListMixin, MonthArchiveView):
-    allow_empty = True
-
-
-class ArticleDayArchiveView(ArticleListMixin, DayArchiveView):
-    allow_empty = True
-
-
-class ArticleDetailView(ArticleListMixin, SearchMetaDetailMixin,
-                        generic.DateDetailView):
-    context_object_name = 'article'
+class ArticleDetailView(ArticleMixin, SearchMetaDetailMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(ArticleDetailView, self).get_context_data(**kwargs)

@@ -11,7 +11,7 @@ from ..views import (ArticleCategoryArchiveView, ArticleDetailView,
                      ArticleFeedView, ArticleListMixin)
 
 
-class TestView(ArticleListMixin, generic.YearArchiveView):
+class TestView(ArticleListMixin, generic.ListView):
     pass
 
 
@@ -92,7 +92,7 @@ class TestViews(TestCase):
         self.assertEqual(get.status_code, 200)
 
         # Handle single and double digit dates.
-        self.assertIn(get['Content-Length'], ['388', '389'])
+        self.assertIn(get['Content-Length'], ['376', '377'])
 
         self.assertEqual(get['Content-Type'], 'application/rss+xml; charset=utf-8')
 

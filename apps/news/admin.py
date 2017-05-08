@@ -38,7 +38,7 @@ class ArticleAdminBase(PageBaseAdmin):
             'fields': ['image', 'content', 'summary']
         }),
         ('Publication', {
-            'fields': ['categories', 'authors', 'is_online'],
+            'fields': ['categories', 'is_online'],
             'classes': ['collapse']
         }),
     ]
@@ -50,13 +50,7 @@ class ArticleAdminBase(PageBaseAdmin):
 
     raw_id_fields = ['image']
 
-    filter_horizontal = ['categories', 'authors']
-
-    def save_related(self, request, form, formsets, change):
-        super(ArticleAdminBase, self).save_related(request, form, formsets, change)
-        # For new articles, add in the current author.
-        if not change and not form.cleaned_data['authors']:
-            form.instance.authors.add(request.user)
+    filter_horizontal = ['categories']
 
     def get_fieldsets(self, request, obj=None):
         fieldsets = super(ArticleAdminBase, self).get_fieldsets(request, obj)
@@ -72,17 +66,18 @@ class ArticleAdminBase(PageBaseAdmin):
         form.base_fields['news_feed'].initial = get_default_news_feed()
         return form
 
-    def formfield_for_choice_field(self, db_field, request, **kwargs):
+    def formfield_for_choice_field(self, db_field, request=None, **kwargs):
         """
         Give people who have the permission to approve articles an extra
         option to change the status of an Article to approved
         """
-        choices_list = STATUS_CHOICES
-        if getattr(settings, 'NEWS_APPROVAL_SYSTEM', False) and not request.user.has_perm('news.can_approve_articles'):
-            choices_list = [x for x in STATUS_CHOICES if x[0] != 'approved']
+        if request:
+            choices_list = STATUS_CHOICES
+            if getattr(settings, 'NEWS_APPROVAL_SYSTEM', False) and not request.user.has_perm('news.can_approve_articles'):
+                choices_list = [x for x in STATUS_CHOICES if x[0] != 'approved']
 
-        if db_field.name == 'status':
-            kwargs['choices'] = choices_list
+            if db_field.name == 'status':
+                kwargs['choices'] = choices_list
 
         return super(ArticleAdminBase, self).formfield_for_choice_field(db_field, request, **kwargs)
 

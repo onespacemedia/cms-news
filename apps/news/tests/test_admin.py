@@ -57,23 +57,6 @@ class TestArticleAdminBase(TestCase):
                 date=self.date,
             )
 
-    def test_articleadminbase_save_related(self):
-        form = self.article_admin.get_form(self.request, obj=self.article)({
-            'date': self.date,
-            'news_feed': self.feed.pk,
-            'slug': 'bar',
-            'title': 'Bar'
-        })
-        self.assertTrue(form.is_valid())
-
-        save_instance(form, self.article, commit=False)
-        formsets = self.article_admin.get_formsets_with_inlines(self.request)
-        self.article_admin.save_related(self.request, form, formsets, True)
-
-        form.save()
-        self.request.user = MockSuperUser().pk
-        self.article_admin.save_related(self.request, form, formsets, False)
-
     def test_articleadminbase_formfield_for_choice_field(self):
         formfield = self.article_admin.formfield_for_choice_field(self.article._meta.get_field('status'), self.request)
         self.assertListEqual(formfield.choices, [

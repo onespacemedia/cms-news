@@ -7,10 +7,9 @@ from django.utils.timezone import now
 
 from ..models import Article, Category, NewsFeed
 from ..templatetags.news import (get_article_archive_url,
-                                 get_article_day_archive_url, get_article_url,
-                                 get_article_year_archive_url,
-                                 get_category_url, get_page_from_context,
-                                 page_context, takes_article_page, takes_current_page)
+                                 get_article_url, get_category_url,
+                                 get_page_from_context, page_context,
+                                 takes_article_page, takes_current_page)
 
 
 class TestPageContent(ContentBase):
@@ -146,7 +145,7 @@ class NewsTest(TestCase):
         self._create_feed_article()
 
         url = get_article_url({}, self.article, page=self.page)
-        self.assertEqual(url, '/news' + self.date_str + '/foo/')
+        self.assertEqual(url, '/news/foo/')
 
     def test_article_archive_url(self):
         self._create_feed_article()
@@ -155,52 +154,4 @@ class NewsTest(TestCase):
 
     def test_category_url(self):
         self._create_feed_article()
-        self.assertEqual(get_category_url({}, self.category, page=self.page), '/news/foo/')
-
-    def test_article_year_archive_url(self):
-        self._create_feed_article()
-        url = get_article_year_archive_url({}, self.date.year, page=self.page)
-        self.assertEqual(url, '/news/' + str(self.date.year) + '/')
-
-    def test_article_day_archive_url(self):
-        self._create_feed_article()
-        url = get_article_day_archive_url({}, self.date, page=self.page)
-        self.assertEqual(url, '/news' + self.date_str + '/')
-
-        # def test_article_date_list(self):
-        #     self._create_feed_article()
-        #     date_list = render_article_date_list({'request': {}}, page=self.page)
-        #
-        #     self.assertEqual(date_list['request'], {})
-        #     self.assertIsNone(date_list['current_year'])
-        #     self.assertEqual(list(date_list['date_list']), [self.date.date().replace(day=1)])
-        #
-        #     date_list = render_article_date_list({'request': {}, 'year': 1970}, page=self.page)
-        #
-        #     self.assertEqual(date_list['request'], {})
-        #     self.assertEqual(date_list['current_year'], 1970)
-        #     self.assertEqual(list(date_list['date_list']), [self.date.date().replace(day=1)])
-        #
-        #     date_list = render_article_date_list({'request': {}, 'year': self.date.date()}, page=self.page)
-        #
-        #     self.assertEqual(date_list['request'], {})
-        #     self.assertEqual(date_list['current_year'], self.date.date().year)
-        #     self.assertEqual(list(date_list['date_list']), [self.date.date().replace(day=1)])
-        #
-        #     date_list = render_article_date_list({'request': {}, 'month': self.date.date()}, page=self.page)
-        #
-        #     self.assertEqual(date_list['request'], {})
-        #     self.assertEqual(date_list['current_year'], self.date.date().year)
-        #     self.assertEqual(list(date_list['date_list']), [self.date.date().replace(day=1)])
-        #
-        #     date_list = render_article_date_list({'request': {}, 'day': self.date.date()}, page=self.page)
-        #
-        #     self.assertEqual(date_list['request'], {})
-        #     self.assertEqual(date_list['current_year'], self.date.date().year)
-        #     self.assertEqual(list(date_list['date_list']), [self.date.date().replace(day=1)])
-        #
-        #     date_list = render_article_date_list({'request': {}, 'article': self.article}, page=self.page)
-        #
-        #     self.assertEqual(date_list['request'], {})
-        #     self.assertEqual(date_list['current_year'], self.date.date().year)
-        #     self.assertEqual(list(date_list['date_list']), [self.date.date().replace(day=1)])
+        self.assertEqual(get_category_url({}, self.category, page=self.page), '/news/category/foo/')

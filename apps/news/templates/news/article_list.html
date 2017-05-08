@@ -14,7 +14,7 @@
 
           <h3><a href="{{ get_article_url(article) }}">{{ article }}</a></h3>
           <p>
-            <a href="{{ get_article_day_archive_url(article.date) }}">{{ article.date }}</a>
+            {{ article.date }}
 
             {% for category in article.categories.all() %}
               <a href="{{ get_category_url(category) }}">

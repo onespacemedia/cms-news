@@ -110,8 +110,12 @@ class ArticleManager(OnlineBaseManager):
     """Manager for Article models."""
 
     def select_published(self, queryset):
+        all_pages = Page.objects.filter(content_type_id=ContentType.objects.get_for_model(NewsFeed))
+        published_news_feed_pages = list(Page.objects.select_published(all_pages).values_list('id', flat=True))
+
         queryset = super(ArticleManager, self).select_published(queryset)
         queryset = queryset.filter(
+            news_feed__page__pk__in=published_news_feed_pages,
             date__lte=timezone.now().replace(second=0, microsecond=0),
         )
         if getattr(settings, 'NEWS_APPROVAL_SYSTEM', False):
@@ -119,6 +123,7 @@ class ArticleManager(OnlineBaseManager):
                 status='approved'
             )
         return queryset
+
 
 STATUS_CHOICES = [
     ('draft', 'Draft'),
@@ -139,7 +144,7 @@ class Article(PageBase):
         blank=False,
     )
 
-    date = models.DateField(
+    date = models.DateTimeField(
         db_index=True,
         default=timezone.now,
     )
@@ -149,21 +154,14 @@ class Article(PageBase):
         null=True,
     )
 
-    content = HtmlField(
-        blank=True,
-    )
+    content = HtmlField()
 
-    summary = HtmlField(
+    summary = models.TextField(
         blank=True,
     )
 
     categories = models.ManyToManyField(
         Category,
-        blank=True,
-    )
-
-    authors = models.ManyToManyField(
-        settings.AUTH_USER_MODEL,
         blank=True,
     )
 
@@ -176,9 +174,6 @@ class Article(PageBase):
     def _get_permalink_for_page(self, page):
         """Returns the URL of this article for the given news feed page."""
         return page.reverse('article_detail', kwargs={
-            'year': self.date.year,
-            'month': self.date.strftime('%b').lower(),
-            'day': self.date.day,
             'slug': self.slug,
         })
 

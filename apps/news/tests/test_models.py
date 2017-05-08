@@ -16,11 +16,6 @@ class TestNews(TestCase):
     def _create_objects(self):
         with externals.watson.context_manager('update_index')():
             self.date = now()
-            self.date_str = '/{}/{}/{}'.format(
-                self.date.strftime('%Y'),
-                self.date.strftime('%b').lower(),
-                self.date.strftime('%d').lstrip('0'),
-            )
 
             content_type = ContentType.objects.get_for_model(NewsFeed)
 
@@ -41,8 +36,11 @@ class TestNews(TestCase):
                 news_feed=self.feed,
                 title='Foo',
                 slug='foo',
-                date=self.date,
+                # The seconds subtraction is because of time-rounding
+                # in the base publication manager.
+                date=self.date - timedelta(seconds=61),
             )
+
             self.article.categories.add(self.category)
 
             self.article_2 = Article.objects.create(
@@ -57,7 +55,7 @@ class TestNews(TestCase):
                 title='Foo 3',
                 slug='foo3',
                 status='approved',
-                date=self.date,
+                date=self.date - timedelta(seconds=61),
             )
 
     def test_get_default_news_page_no_pages(self):
@@ -76,24 +74,24 @@ class TestNews(TestCase):
 
     def test_category_get_permalink_for_page(self):
         self._create_objects()
-        self.assertEqual(self.category._get_permalink_for_page(self.page), '/foo/')
+        self.assertEqual(self.category._get_permalink_for_page(self.page), '/category/foo/')
 
     def test_category_get_permalinks(self):
         self._create_objects()
-        self.assertEqual(self.category._get_permalinks(), {'page_' + str(self.page.pk): '/foo/'})
+        self.assertEqual(self.category._get_permalinks(), {'page_' + str(self.page.pk): '/category/foo/'})
 
     def test_categoryhistorylinkadapter_get_permalinks(self):
         self._create_objects()
         adapter = CategoryHistoryLinkAdapter()
-        self.assertEqual(adapter.get_permalinks(self.category), {'page_' + str(self.page.pk): '/foo/'})
+        self.assertEqual(adapter.get_permalinks(self.category), {'page_' + str(self.page.pk): '/category/foo/'})
 
     def test_article_get_permalink_for_page(self):
         self._create_objects()
-        self.assertEqual(self.article._get_permalink_for_page(self.page), self.date_str + '/foo/')
+        self.assertEqual(self.article._get_permalink_for_page(self.page), '/foo/')
 
     def test_article_get_absolute_url(self):
         self._create_objects()
-        self.assertEqual(self.article.get_absolute_url(), self.date_str + '/foo/')
+        self.assertEqual(self.article.get_absolute_url(), '/foo/')
 
     def test_articlemanager_select_published(self):
         self._create_objects()

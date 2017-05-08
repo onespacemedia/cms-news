@@ -113,62 +113,10 @@ def get_category_url(context, category, page):
 
 @library.global_function
 @jinja2.contextfunction
-@takes_current_page
-def get_article_year_archive_url(context, year, page):
-    """Renders the year archive URL for the given year."""
-    return escape(page.reverse('article_year_archive', kwargs={
-        'year': year,
-    }))
+def get_latest_news_articles(context, count=3, news_feed=None):
+    articles = Article.objects.all()
 
+    if news_feed:
+        articles = articles.filter(news_feed=news_feed)
 
-@library.global_function
-@jinja2.contextfunction
-@takes_current_page
-def get_article_day_archive_url(context, date, page):
-    """Renders the month archive URL for the given date."""
-    return escape(page.reverse('article_day_archive', kwargs={
-        'year': date.year,
-        'month': date.strftime('%b').lower(),
-        'day': date.day,
-    }))
-
-
-@library.global_function
-@library.render_with('news/includes/article_date_list.html')
-@jinja2.contextfunction
-@page_context
-@takes_current_page
-def render_article_date_list(context, page):
-    """Renders a list of dates."""
-    date_list = Article.objects.filter(
-        news_feed_id=page.id,
-    ).dates('date', 'month').order_by('-date')
-
-    # Resolve the current year.
-    current_year = context.get('year', None)
-
-    if current_year is not None:
-        try:
-            current_year = int(current_year)
-        except TypeError:
-            current_year = int(current_year.year)
-    else:
-        current_month = context.get('month', None)
-
-        if current_month is not None:
-            current_year = current_month.year
-        else:
-            current_day = context.get('day', None)
-
-            if current_day is not None:
-                current_year = current_day.year
-            else:
-                current_article = context.get('article', None)
-
-                if current_article is not None:
-                    current_year = current_article.date.year
-
-    return {
-        'date_list': date_list,
-        'current_year': current_year,
-    }
+    return articles[:count]
