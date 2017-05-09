@@ -120,3 +120,33 @@ def get_latest_news_articles(context, count=3, news_feed=None):
         articles = articles.filter(news_feed=news_feed)
 
     return articles[:count]
+
+
+@library.global_function
+@jinja2.contextfunction
+def get_related_articles(context, count=4):
+    current_article = context['article']
+
+    related_articles = list(Article.objects.exclude(
+        pk=current_article.pk
+    ).filter(
+        categories__in=current_article.categories.all(),
+    ).distinct()[:count])
+
+    if len(related_articles.count()) >= count:
+        return related_articles[:count]
+
+    # If we couldn't get enough related articles, pad out the data with others.
+    missing = count - len(related_articles)
+
+    padding = Article.objects.exclude(
+        pk__in=[article.pk for article in related_articles] + [current_article.pk]
+    ).distinct()[:missing]
+
+    return list(related_articles) + list(padding)
+
+    if news_feed:
+        articles = articles.filter(news_feed=news_feed)
+
+    return articles[:count]
+

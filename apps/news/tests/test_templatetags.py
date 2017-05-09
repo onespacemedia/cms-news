@@ -8,6 +8,7 @@ from django.utils.timezone import now
 from ..models import Article, Category, NewsFeed
 from ..templatetags.news import (get_article_archive_url,
                                  get_article_url, get_category_url,
+                                 get_latest_news_articles, get_related_articles,
                                  get_page_from_context, page_context,
                                  takes_article_page, takes_current_page)
 
@@ -63,6 +64,10 @@ class NewsTest(TestCase):
                 slug='foo'
             )
 
+            self.category1 = Category.objects.create(
+                slug='bar'
+            )
+
         # Create an Article.
         self.article = Article.objects.create(
             news_feed=self.feed,
@@ -70,6 +75,72 @@ class NewsTest(TestCase):
             slug='foo',
             date=self.date,
         )
+
+        self.article.categories.add(self.category)
+
+        self.article1 = Article.objects.create(
+            news_feed=self.feed,
+            title='Article1',
+            slug='foo1',
+            date=self.date,
+        )
+
+        self.article1.categories.add(self.category)
+
+        self.article2 = Article.objects.create(
+            news_feed=self.feed,
+            title='Article2',
+            slug='foo2',
+            date=self.date,
+        )
+
+        self.article2.categories.add(self.category1)
+
+        self.article3 = Article.objects.create(
+            news_feed=self.feed,
+            title='Article3',
+            slug='foo3',
+            date=self.date,
+        )
+
+        self.article3.categories.add(self.category1)
+
+        self.article4 = Article.objects.create(
+            news_feed=self.feed,
+            title='Article4',
+            slug='foo4',
+            date=self.date,
+        )
+
+        self.article4.categories.add(self.category)
+
+        self.article5 = Article.objects.create(
+            news_feed=self.feed,
+            title='Article5',
+            slug='foo5',
+            date=self.date,
+        )
+
+        self.article5.categories.add(self.category)
+
+        self.article6 = Article.objects.create(
+            news_feed=self.feed,
+            title='Article6',
+            slug='foo6',
+            date=self.date,
+        )
+
+        self.article6.categories.add(self.category1)
+
+        self.article7 = Article.objects.create(
+            news_feed=self.feed,
+            title='Article7',
+            slug='foo7',
+            date=self.date,
+        )
+
+        self.article7.categories.add(self.category1)
+
 
     def test_page_context(self):
         def inner_function(context):
@@ -155,3 +226,17 @@ class NewsTest(TestCase):
     def test_category_url(self):
         self._create_feed_article()
         self.assertEqual(get_category_url({}, self.category, page=self.page), '/news/category/foo/')
+
+    def test_latest_news_articles(self):
+        self._create_feed_article()
+        articles = get_latest_news_articles({}, count=4)
+        self.assertEqual(len(articles), 4)
+        articles = get_latest_news_articles({}, count=9)
+        self.assertEqual(len(articles), 8)
+
+    def test_related_articles(self):
+        self._create_feed_article()
+        articles = get_latest_news_articles({'article':self.article}, count=3)
+        self.assertEqual(len(articles), 3)
+        articles = get_latest_news_articles({'article':self.article}, count=6)
+        self.assertEqual(len(articles), 6)
