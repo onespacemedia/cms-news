@@ -1,9 +1,9 @@
 """Admin settings for the CMS news app."""
 
-from cms import externals
 from cms.admin import OnlineBaseAdmin, PageBaseAdmin
 from django.conf import settings
 from django.contrib import admin
+from reversion.admin import VersionAdmin
 
 from .models import STATUS_CHOICES, Article, Category, get_default_news_feed
 
@@ -21,12 +21,12 @@ class CategoryAdmin(PageBaseAdmin):
     )
 
 
-class ArticleAdminBase(PageBaseAdmin):
+class ArticleAdmin(PageBaseAdmin, VersionAdmin):
     date_hierarchy = 'date'
 
     search_fields = PageBaseAdmin.search_fields + ('content', 'summary',)
 
-    list_display = ['title', 'date', 'is_online']
+    list_display = ['title', 'date', 'is_online', 'get_date_modified']
 
     list_filter = ['is_online', 'categories', 'status']
 
@@ -80,13 +80,5 @@ class ArticleAdminBase(PageBaseAdmin):
                 kwargs['choices'] = choices_list
 
         return super(ArticleAdminBase, self).formfield_for_choice_field(db_field, request, **kwargs)
-
-
-if externals.reversion:
-    class ArticleAdmin(ArticleAdminBase, externals.reversion['admin.VersionMetaAdmin']):
-        list_display = ArticleAdminBase.list_display + ['get_date_modified']
-else:
-    class ArticleAdmin(ArticleAdminBase):
-        pass
 
 admin.site.register(Article, ArticleAdmin)

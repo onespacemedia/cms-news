@@ -1,10 +1,10 @@
-from cms import externals
 from cms.apps.pages.middleware import RequestPageManager
 from cms.apps.pages.models import Page
 from django.contrib.contenttypes.models import ContentType
 from django.test import RequestFactory, TestCase
 from django.utils.timezone import now
 from django.views import generic
+from watson import search
 
 from ..models import Article, Category, NewsFeed
 from ..views import (ArticleCategoryArchiveView, ArticleDetailView,
@@ -20,7 +20,7 @@ class TestViews(TestCase):
     def setUp(self):
         self.factory = RequestFactory()
 
-        with externals.watson.context_manager('update_index')():
+        with search.updated_index():
             self.date = now()
             self.date_str = '/{}/{}/{}'.format(
                 self.date.strftime('%Y'),

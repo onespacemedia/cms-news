@@ -1,10 +1,9 @@
-from cms import externals
 from cms.apps.pages.models import Page
 from django.contrib.admin.sites import AdminSite
 from django.contrib.contenttypes.models import ContentType
-from django.forms.models import save_instance
 from django.test import RequestFactory, TestCase
 from django.utils.timezone import now
+from watson import search
 
 from ..admin import ArticleAdminBase
 from ..models import Article, Category, NewsFeed, get_default_news_feed
@@ -26,7 +25,7 @@ class TestArticleAdminBase(TestCase):
         self.factory = RequestFactory()
         self.request = self.factory.get('/')
 
-        with externals.watson.context_manager('update_index')():
+        with search.updated_index():
             self.date = now()
             self.date_str = '/{}/{}/{}'.format(
                 self.date.strftime('%Y'),

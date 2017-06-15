@@ -1,5 +1,5 @@
 """Models used by the CMS news app."""
-from cms import externals, sitemaps
+from cms import sitemaps
 from cms.apps.media.models import ImageRefField
 from cms.apps.pages.models import ContentBase, Page
 from cms.models import (HtmlField, OnlineBaseManager, PageBase,
@@ -8,6 +8,9 @@ from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.utils import timezone
+from historylinks import shortcuts as historylinks
+from historylinks.registration import HistoryLinkAdapter
+from watson import search as watson
 
 
 class NewsFeed(ContentBase):
@@ -93,7 +96,7 @@ class Category(PageBase):
         ordering = ('title',)
 
 
-class CategoryHistoryLinkAdapter(externals.historylinks.HistoryLinkAdapter):
+class CategoryHistoryLinkAdapter(HistoryLinkAdapter):
 
     """History link adapter for category models."""
 
@@ -102,7 +105,7 @@ class CategoryHistoryLinkAdapter(externals.historylinks.HistoryLinkAdapter):
         return obj._get_permalinks()
 
 
-externals.historylinks('register', Category, CategoryHistoryLinkAdapter)
+historylinks.register(Category, CategoryHistoryLinkAdapter)
 
 
 class ArticleManager(OnlineBaseManager):
@@ -192,8 +195,8 @@ class Article(PageBase):
         )
 
 
-externals.historylinks('register', Article)
+historylinks.register(Article)
 
 sitemaps.register(Article)
 
-externals.watson('register', Article, adapter_cls=PageBaseSearchAdapter)
+watson.register(Article, adapter_cls=PageBaseSearchAdapter)

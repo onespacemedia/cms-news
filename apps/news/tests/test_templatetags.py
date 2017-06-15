@@ -1,9 +1,9 @@
-from cms import externals
 from cms.apps.pages.models import ContentBase, Page
 from django.contrib.contenttypes.models import ContentType
 from django.template import VariableDoesNotExist
 from django.test import TestCase
 from django.utils.timezone import now
+from watson import search
 
 from ..models import Article, Category, NewsFeed
 from ..templatetags.news import (get_article_archive_url,
@@ -24,7 +24,7 @@ class Object(object):
 class NewsTest(TestCase):
 
     def setUp(self):
-        with externals.watson.context_manager('update_index')():
+        with search.updated_index():
             content_type = ContentType.objects.get_for_model(TestPageContent)
 
             self.homepage = Page.objects.create(
@@ -46,7 +46,7 @@ class NewsTest(TestCase):
         )
 
         # Create a NewsFeed page.
-        with externals.watson.context_manager('update_index')():
+        with search.updated_index():
             content_type = ContentType.objects.get_for_model(NewsFeed)
 
             self.page = Page.objects.create(
@@ -186,7 +186,7 @@ class NewsTest(TestCase):
             takes_current_page(inner_function)({})
 
         # Create a NewsFeed page.
-        with externals.watson.context_manager('update_index')():
+        with search.updated_index():
             content_type = ContentType.objects.get_for_model(NewsFeed)
 
             self.page = Page.objects.create(
