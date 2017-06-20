@@ -5,7 +5,7 @@ from django.test import RequestFactory, TestCase
 from django.utils.timezone import now
 from watson import search
 
-from ..admin import ArticleAdminBase
+from ..admin import ArticleAdmin
 from ..models import Article, Category, NewsFeed, get_default_news_feed
 
 
@@ -20,12 +20,12 @@ class TestArticleAdminBase(TestCase):
 
     def setUp(self):
         self.site = AdminSite()
-        self.article_admin = ArticleAdminBase(Article, self.site)
+        self.article_admin = ArticleAdmin(Article, self.site)
 
         self.factory = RequestFactory()
         self.request = self.factory.get('/')
 
-        with search.updated_index():
+        with search.update_index():
             self.date = now()
             self.date_str = '/{}/{}/{}'.format(
                 self.date.strftime('%Y'),

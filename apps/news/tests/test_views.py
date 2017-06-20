@@ -20,7 +20,7 @@ class TestViews(TestCase):
     def setUp(self):
         self.factory = RequestFactory()
 
-        with search.updated_index():
+        with search.update_index():
             self.date = now()
             self.date_str = '/{}/{}/{}'.format(
                 self.date.strftime('%Y'),

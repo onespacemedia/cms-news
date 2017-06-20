@@ -24,7 +24,7 @@ class Object(object):
 class NewsTest(TestCase):
 
     def setUp(self):
-        with search.updated_index():
+        with search.update_index():
             content_type = ContentType.objects.get_for_model(TestPageContent)
 
             self.homepage = Page.objects.create(
@@ -46,7 +46,7 @@ class NewsTest(TestCase):
         )
 
         # Create a NewsFeed page.
-        with search.updated_index():
+        with search.update_index():
             content_type = ContentType.objects.get_for_model(NewsFeed)
 
             self.page = Page.objects.create(
@@ -186,7 +186,7 @@ class NewsTest(TestCase):
             takes_current_page(inner_function)({})
 
         # Create a NewsFeed page.
-        with search.updated_index():
+        with search.update_index():
             content_type = ContentType.objects.get_for_model(NewsFeed)
 
             self.page = Page.objects.create(

@@ -14,7 +14,7 @@ from ..models import (Article, Category, CategoryHistoryLinkAdapter, NewsFeed,
 class TestNews(TestCase):
 
     def _create_objects(self):
-        with search.updated_index():
+        with search.update_index():
             self.date = now()
 
             content_type = ContentType.objects.get_for_model(NewsFeed)
@@ -82,7 +82,7 @@ class TestNews(TestCase):
 
     def test_categoryhistorylinkadapter_get_permalinks(self):
         self._create_objects()
-        adapter = CategoryHistoryLinkAdapter()
+        adapter = CategoryHistoryLinkAdapter(model=Category)
         self.assertEqual(adapter.get_permalinks(self.category), {'page_' + str(self.page.pk): '/category/foo/'})
 
     def test_article_get_permalink_for_page(self):
