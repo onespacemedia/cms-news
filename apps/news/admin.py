@@ -19,6 +19,7 @@ class CategoryAdmin(PageBaseAdmin):
         PageBaseAdmin.NAVIGATION_FIELDS,
         PageBaseAdmin.SEO_FIELDS,
     )
+    list_display = ['__str__']
 
 
 class ArticleAdmin(PageBaseAdmin, VersionAdmin):
@@ -26,7 +27,7 @@ class ArticleAdmin(PageBaseAdmin, VersionAdmin):
 
     search_fields = PageBaseAdmin.search_fields + ('content', 'summary',)
 
-    list_display = ['title', 'date', 'is_online', 'get_date_modified']
+    list_display = ['title', 'date', 'is_online']
 
     list_filter = ['is_online', 'categories', 'status']
 
@@ -53,7 +54,7 @@ class ArticleAdmin(PageBaseAdmin, VersionAdmin):
     filter_horizontal = ['categories']
 
     def get_fieldsets(self, request, obj=None):
-        fieldsets = super(ArticleAdminBase, self).get_fieldsets(request, obj)
+        fieldsets = super(ArticleAdmin, self).get_fieldsets(request, obj)
 
         if not getattr(settings, 'NEWS_APPROVAL_SYSTEM', False):
             for fieldset in fieldsets:
@@ -62,7 +63,7 @@ class ArticleAdmin(PageBaseAdmin, VersionAdmin):
         return fieldsets
 
     def get_form(self, request, obj=None, **kwargs):
-        form = super(ArticleAdminBase, self).get_form(request, obj, **kwargs)
+        form = super(ArticleAdmin, self).get_form(request, obj, **kwargs)
         form.base_fields['news_feed'].initial = get_default_news_feed()
         return form
 
@@ -79,6 +80,6 @@ class ArticleAdmin(PageBaseAdmin, VersionAdmin):
             if db_field.name == 'status':
                 kwargs['choices'] = choices_list
 
-        return super(ArticleAdminBase, self).formfield_for_choice_field(db_field, request, **kwargs)
+        return super(ArticleAdmin, self).formfield_for_choice_field(db_field, request, **kwargs)
 
 admin.site.register(Article, ArticleAdmin)
