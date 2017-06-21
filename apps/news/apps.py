@@ -4,7 +4,7 @@ from watson import search as watson
 
 
 class NewsConfig(AppConfig):
-    name = 'news'
+    name = '{{ project_name }}.apps.news'
 
     def ready(self):
         Article = self.get_model('Article')
