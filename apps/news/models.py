@@ -195,5 +195,4 @@ class Article(PageBase):
 
 
 historylinks.register(Article)
-
 sitemaps.register(Article)
