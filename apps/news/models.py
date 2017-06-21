@@ -10,7 +10,6 @@ from django.db import models
 from django.utils import timezone
 from historylinks import shortcuts as historylinks
 from historylinks.registration import HistoryLinkAdapter
-from watson import search as watson
 
 
 class NewsFeed(ContentBase):
@@ -198,5 +197,3 @@ class Article(PageBase):
 historylinks.register(Article)
 
 sitemaps.register(Article)
-
-watson.register(Article, adapter_cls=PageBaseSearchAdapter)
